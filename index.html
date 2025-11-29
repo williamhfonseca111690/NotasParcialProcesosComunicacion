@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Estudio Maestro | Procesos de Comunicación</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #f4f6f8;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --nav-bg: #1a252f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-top: 60px; /* Espacio para el navbar fijo */
+        }
+
+        /* Navbar Fijo Superior (Móvil) */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--nav-bg);
+            color: white;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 1rem;
+        }
+
+        .navbar-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Menú Desplegable (Overlay) */
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            height: 100vh;
+            background-color: var(--nav-bg);
+            z-index: 1001;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            padding: 2rem 1rem;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+        }
+
+        .nav-overlay.open {
+            left: 0;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .nav-overlay ul {
+            list-style: none;
+            margin-top: 2rem;
+        }
+
+        .nav-overlay a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            display: block;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 1.1rem;
+        }
+
+        .nav-overlay a:hover, .nav-overlay a:active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        /* Overlay oscuro de fondo */
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+        }
+        .backdrop.show { display: block; }
+
+
+        /* Contenido Principal */
+        main {
+            padding: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        /* Estilo de los Módulos (Tarjetas) */
+        section {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border-top: 5px solid var(--accent-color);
+            scroll-margin-top: 80px; /* Para que el navbar no tape el título al hacer scroll */
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+
+        .module-subtitle {
+            display: block;
+            color: #7f8c8d;
+            font-style: italic;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        h3::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            margin-right: 8px;
+            border-radius: 50%;
+        }
+
+        ul.content-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul.content-list > li {
+            background-color: #fafafa;
+            border-left: 3px solid #ddd;
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        ul.content-list > li ul, ul.content-list > li ol {
+            margin-top: 0.5rem;
+            padding-left: 1.2rem;
+            border-top: 1px solid #eee;
+            padding-top: 0.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        strong {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .highlight {
+            background-color: #e3f2fd;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: #0d47a1;
+            font-weight: 500;
+            border: 1px solid #bbdefb;
+        }
+
+        /* Botón "Volver Arriba" */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--accent-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 999;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        .back-to-top:hover { opacity: 1; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navbar Móvil -->
+    <div class="navbar">
+        <div class="navbar-title">Plan Maestro de Estudio</div>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    </div>
+
+    <!-- Menú Lateral (Overlay) -->
+    <div class="backdrop" id="backdrop" onclick="toggleMenu()"></div>
+    <div class="nav-overlay" id="navOverlay">
+        <button class="close-btn" onclick="toggleMenu()">&times;</button>
+        <h2 style="color: white; border:none; text-align: center;">Índice</h2>
+        <ul>
+            <li><a href="#modulo1" onclick="toggleMenu()">1. Mecánica Básica</a></li>
+            <li><a href="#modulo2" onclick="toggleMenu()">2. Epistemología</a></li>
+            <li><a href="#modulo3" onclick="toggleMenu()">3. Enfoques Positivistas</a></li>
+            <li><a href="#modulo4" onclick="toggleMenu()">4. Enfoques Críticos</a></li>
+            <li><a href="#modulo5" onclick="toggleMenu()">5. Evaluación (Maigret)</a></li>
+            <li><a href="#modulo6" onclick="toggleMenu()">6. Teoría Social (Thompson)</a></li>
+            <li><a href="#modulo7" onclick="toggleMenu()">7. Bases Sociológicas</a></li>
+        </ul>
+    </div>
+
+    <!-- Contenido -->
+    <main>
+        <header>
+            <h1>Procesos de Comunicación</h1>
+            <p>PLAN DE ESTUDIO MAESTRO: PROCESOS DE COMUNICACIÓN</p>
+        </header>
+
+        <!-- MÓDULO 1 -->
+        <section id="modulo1">
+            <h2>MÓDULO 1: LA MECÁNICA DE LA COMUNICACIÓN (FUNDAMENTOS)</h2>
+            <span class="module-subtitle">Entender la comunicación como un sistema que funciona o falla.</span>
+
+            <h3>1.1. La Comunicación como Proceso</h3>
+            <ul class="content-list">
+                <li><strong>Acto vs. Proceso:</strong>
+                    <ul>
+                        <li><strong>Acto:</strong> Es estático y lineal (como una foto). Alguien dice algo y termina.</li>
+                        <li><strong>Proceso:</strong> Es dinámico, circular e infinito (como una película). Lo que yo digo te afecta, tú reaccionas, y tu reacción me afecta a mí. Nunca se detiene.</li>
+                    </ul>
+                </li>
+                <li><strong>La Escuela de Palo Alto (Paul Watzlawick):</strong>
+                    <ul>
+                        <li><strong>Primer Axioma:</strong> "Es imposible no comunicar".</li>
+                        <li>Todo comportamiento es comunicación. El silencio, la mirada, la inacción o ignorar a alguien también envían un mensaje.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>1.2. Los Elementos del Circuito Comunicativo</h3>
+                        <ul class="content-list">
+                <li><strong>Emisor:</strong> Quien tiene la intención y codifica el mensaje.</li>
+                <li><strong>Receptor:</strong> Quien recibe y decodifica (interpreta) el mensaje.</li>
+                <li><strong>Mensaje:</strong> El contenido de la información.</li>
+                <li><strong>Código:</strong> El sistema de signos y reglas que ambos deben compartir para entenderse (Ejemplo: el idioma español, el código Morse, el lenguaje de señas).</li>
+                <li><strong>Canal:</strong> El medio físico o técnico por donde viaja el mensaje (Ejemplo: ondas de luz, aire, cable de teléfono, papel).</li>
+                <li><strong>Contexto:</strong> La situación social, cultural o física que rodea al acto comunicativo y le da el sentido real. Sin contexto, hay malentendidos.</li>
+                <li><strong>Retroalimentación (Feedback):</strong> La respuesta del receptor que cierra el ciclo y confirma si el mensaje llegó.</li>
+            </ul>
+
+            <h3>1.3. El Ruido (Interferencias)</h3>
+            <p><em>Cualquier factor que distorsiona o impide que el mensaje llegue nítido.</em></p>
+            <ul class="content-list">
+                <li><strong>Ruido Físico:</strong> Interferencia externa en el ambiente (Ejemplo: música alta en una discoteca, una mancha de café en una carta).</li>
+                <li><strong>Ruido Semántico:</strong> Problemas con el significado de las palabras o el código (Ejemplo: usar tecnicismos médicos con un paciente, hablar un idioma que el otro no sabe).</li>
+                <li><strong>Ruido Psicológico:</strong> Interferencia mental en el emisor o receptor (Ejemplo: emociones fuertes como ira o tristeza, prejuicios, falta de atención).</li>
+                <li><strong>Ruido Técnico:</strong> Fallas en el canal o aparato (Ejemplo: se va la señal de internet, el micrófono no funciona).</li>
+            </ul>
+        </section>
+
+        <!-- MÓDULO 2 -->
+        <section id="modulo2">
+            <h2>MÓDULO 2: EPISTEMOLOGÍA (LAS GAFAS CIENTÍFICAS)</h2>
+            <span class="module-subtitle">Cómo la ciencia decide estudiar la comunicación.</span>
+
+            <h3>2.1. El Debate Disciplinar (Miquel de Moragas)</h3>
+            <ul class="content-list">
+                <li><strong>¿Ciencia o Campo de Estudio?</strong>
+                    <ul>
+                        <li>La comunicación <strong>NO es una ciencia independiente</strong> (porque no tiene un objeto de estudio exclusivo).</li>
+                        <li>Es un <strong>Campo de Estudio</strong>: Un lugar de encuentro donde convergen muchas ciencias (sociología, psicología, antropología).</li>
+                    </ul>
+                </li>
+                <li><strong>Pluridisciplinariedad (La Suma):</strong> Varias ciencias estudian el mismo objeto, pero por separado, sin mezclar sus métodos (Coexistencia).</li>
+                <li><strong>Interdisciplinariedad (La Mezcla):</strong> Las ciencias colaboran, intercambian métodos y crean un análisis conjunto. Es la meta ideal, pero difícil de lograr.</li>
+            </ul>
+
+            <h3>2.2. Los 4 Grandes Paradigmas</h3>
+            <p><em>La postura o "gafas" del investigador frente a la realidad.</em></p>
+            <ul class="content-list">
+                <li><strong>1. Paradigma Positivista (Empirista/Funcionalista):</strong>
+                    <ul>
+                        <li><strong>Objetivo:</strong> Buscar Leyes Universales. Explicar, Predecir y Controlar.</li>
+                        <li><strong>Visión:</strong> La sociedad busca el Orden y el Equilibrio.</li>
+                        <li><strong>Rol del Científico:</strong> Neutral. No opina, solo mide datos "objetivos".</li>
+                    </ul>
+                </li>
+                <li><strong>2. Paradigma Interpretativo (Histórico-Hermenéutico):</strong>
+                    <ul>
+                        <li><strong>Objetivo:</strong> Buscar Sentidos. Comprender (Verstehen) e Interpretar los significados subjetivos.</li>
+                        <li><strong>Visión:</strong> La realidad es una construcción simbólica.</li>
+                    </ul>
+                </li>
+                <li><strong>3. Paradigma Crítico-Social:</strong>
+                    <ul>
+                        <li><strong>Objetivo:</strong> Buscar Poder e Ideología. Lograr la Transformación (Praxis).</li>
+                        <li><strong>Visión:</strong> La sociedad es Conflicto, lucha de clases y dominación.</li>
+                        <li><strong>Rol del Científico:</strong> Comprometido. Toma partido por el cambio social.</li>
+                    </ul>
+                </li>
+                <li><strong>4. Paradigma Estructuralista:</strong>
+                    <ul>
+                        <li><strong>Objetivo:</strong> Buscar Reglas Ocultas.</li>
+                        <li><strong>Visión:</strong> Busca la Estructura invisible (el esqueleto) que sostiene al sistema social o al lenguaje, más allá de la conciencia individual.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>2.3. Tipos de Investigación</h3>
+            <ul class="content-list">
+                <li><strong>Cuantitativa:</strong> Mide con números y estadística. Busca generalizar resultados. (Típica del Positivismo). Ejemplo: Encuestas.</li>
+                <li><strong>Cualitativa:</strong> Profundiza en el significado y la cualidad. No busca generalizar. (Típica de lo Crítico/Hermenéutico). Ejemplo: Entrevistas profundas, observación.</li>
+            </ul>
+        </section>
+
+        <!-- MÓDULO 3 -->
+        <section id="modulo3">
+            <h2>MÓDULO 3: ENFOQUES POSITIVISTAS (EE.UU.)</h2>
+            <span class="module-subtitle">Obsesión por los efectos, las funciones, los datos y el pragmatismo.</span>
+
+            <h3>3.1. Aguja Hipodérmica / Conductismo (Los Inicios)</h3>
+            <ul class="content-list">
+                <li><strong>Metáfora:</strong> Los medios son una inyección directa al cerebro.</li>
+                <li><strong>Esquema:</strong> Estímulo &rarr; Respuesta (Causa directa, como el perro de Pavlov).</li>
+                <li><strong>Audiencia:</strong> Considerada Pasiva, atomizada y sin capacidad crítica.</li>
+                <li><strong>Efecto:</strong> Inmediato, directo y Uniforme (afecta a todos por igual).</li>
+            </ul>
+
+            <h3>3.2. Teoría de los Efectos Limitados (Paul Lazarsfeld)</h3>
+                        <ul class="content-list">
+                <li><strong>Descubrimiento:</strong> Los medios no lavan el cerebro fácilmente. La gente tiene filtros.</li>
+                <li><strong>Influencia Personal:</strong> La opinión de amigos y familiares pesa más que la TV.</li>
+                <li><strong>Líderes de Opinión:</strong> Personas influyentes que consumen medios y filtran la información para los demás.</li>
+                <li><strong>Flujo en Dos Pasos (Two-step flow):</strong> El mensaje no va directo a la masa. Va de: <span class="highlight">Medios &rarr; Líderes &rarr; Gente</span>.</li>
+                <li><strong>Procesos Selectivos (El escudo psicológico):</strong>
+                    <ul>
+                        <li><strong>Atención Selectiva:</strong> Solo veo lo que me gusta o coincide conmigo.</li>
+                        <li><strong>Percepción Selectiva:</strong> Interpreto lo que veo a mi conveniencia ("distorsiono" para que encaje).</li>
+                        <li><strong>Retención Selectiva:</strong> Solo recuerdo lo que confirma mis creencias.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>3.3. Análisis Funcional (Lasswell, Wright, Merton)</h3>
+            <p><em>Ve a los medios como órganos que mantienen vivo el cuerpo social.</em></p>
+            <ul class="content-list">
+                <li><strong>Las 4 Funciones de los Medios:</strong>
+                    <ol>
+                        <li><strong>Supervisión del Entorno:</strong> Avisar peligros y noticias (el radar).</li>
+                        <li><strong>Correlación:</strong> Explicar e interpretar los hechos (dar sentido).</li>
+                        <li><strong>Transmisión de Cultura:</strong> Pasar la herencia social y valores de generación en generación (educación).</li>
+                        <li><strong>Entretenimiento:</strong> Relajar la tensión social.</li>
+                    </ol>
+                </li>
+                <li><strong>La Disfunción Narcotizante:</strong> Fenómeno negativo donde el exceso de información genera apatía. La gente confunde "saber" sobre un problema con "hacer" algo al respecto.</li>
+            </ul>
+
+            <h3>3.4. Usos y Gratificaciones (Katz)</h3>
+            <ul class="content-list">
+                <li><strong>Giro Radical:</strong> La pregunta cambia de "¿Qué hacen los medios con la gente?" a <strong>"¿Qué hace la gente con los medios?"</strong>.</li>
+                <li><strong>Audiencia Activa:</strong> El usuario no es víctima; es el jefe. Elige usar el medio para satisfacer necesidades.</li>
+                <li><strong>Necesidades Básicas:</strong>
+                    <ul>
+                        <li><strong>Evasión:</strong> Escapar de la rutina.</li>
+                        <li><strong>Relaciones Personales:</strong> Compañía o interacción social.</li>
+                        <li><strong>Identidad Personal:</strong> Reforzar quién soy.</li>
+                        <li><strong>Vigilancia:</strong> Informarse.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>3.5. Efectos Cognitivos (A largo plazo)</h3>
+            <ul class="content-list">
+                <li><strong>Agenda Setting (McCombs):</strong> Los medios no tienen éxito diciéndole a la gente <em>qué</em> pensar, pero sí tienen éxito diciéndoles <strong>sobre qué</strong> pensar. Jerarquizan la importancia de los temas.</li>
+                <li><strong>Teoría del Cultivo (Gerbner):</strong> La exposición prolongada a la TV (y su violencia) "cultiva" una percepción distorsionada de la realidad. Genera el "Síndrome del Mundo Cruel" (miedo irracional).</li>
+            </ul>
+
+            <h3>3.6. Sociología de la Producción de Mensajes (Newsmaking)</h3>
+            <p><em>Analiza la noticia como un producto fabricado, no como un espejo de la realidad.</em></p>
+            <ul class="content-list">
+                <li><strong>Gatekeeper (El Portero):</strong> El editor o periodista que tiene el poder de dejar pasar una noticia o censurarla.</li>
+                <li><strong>Rutinas Productivas:</strong> Las noticias se deforman por limitaciones técnicas (tiempo, falta de imágenes, formato), no necesariamente por ideología política.</li>
+            </ul>
+        </section>
+
+        <!-- MÓDULO 4 -->
+        <section id="modulo4">
+            <h2>MÓDULO 4: ENFOQUES CRÍTICOS (EUROPA/LATAM)</h2>
+            <span class="module-subtitle">Obsesión por el poder, la dominación, la ideología y la resistencia.</span>
+
+            <h3>4.1. Escuela de Frankfurt (Adorno y Horkheimer)</h3>
+            <ul class="content-list">
+                <li><strong>Industria Cultural:</strong> Término crítico. La cultura ya no es arte, se fabrica en serie como automóviles (mercancía).</li>
+                <li><strong>Estandarización:</strong> Todo producto cultural es igual, sigue la misma fórmula repetitiva.</li>
+                <li><strong>Pseudo-individualidad:</strong> El sistema te hace creer que eliges libremente, pero solo eliges entre opciones idénticas prefabricadas.</li>
+                <li><strong>Alienación:</strong> El entretenimiento fácil adormece la mente crítica del trabajador para que no cuestione su explotación.</li>
+            </ul>
+
+            <h3>4.2. Economía Política e Imperialismo Cultural (Schiller, Dorfman, Mattelart)</h3>
+            <ul class="content-list">
+                <li><strong>Centro-Periferia:</strong> El flujo de información es Unidireccional. Los países ricos (Centro/Norte) producen y envían; los países pobres (Periferia/Sur) solo consumen.</li>
+                <li><strong>Imperialismo Cultural:</strong> La imposición ideológica de los valores y estilo de vida del país dominante sobre los dependientes.</li>
+                <li><strong>Erosión Cultural:</strong> El debilitamiento y pérdida de la identidad local/nativa ante la invasión de la cultura extranjera.</li>
+                <li><strong>Caso "Para leer al Pato Donald":</strong> Demostró cómo los productos "inocentes" (Disney) camuflan ideología capitalista y de dominación.</li>
+            </ul>
+
+            <h3>4.3. Estudios Culturales (Escuela de Birmingham - Stuart Hall)</h3>
+            <ul class="content-list">
+                <li><strong>Giro:</strong> La cultura popular es un terreno de lucha. La audiencia no es tonta.</li>
+                <li><strong>Codificación / Decodificación:</strong> El mensaje se transforma. El emisor codifica con una intención, pero el receptor decodifica a su manera.</li>
+                <li><strong>Los 3 Tipos de Lectura (Recepción):</strong>
+                    <ol>
+                        <li><strong>Hegemónica (Dominante):</strong> El receptor acepta el mensaje tal cual.</li>
+                        <li><strong>Negociada:</strong> El receptor acepta una parte, pero rechaza otra.</li>
+                        <li><strong>Oposicional (Resistencia):</strong> El receptor entiende el mensaje, pero lo rechaza totalmente o lo reinterpreta (resistencia cultural).</li>
+                    </ol>
+                </li>
+            </ul>
+        </section>
+
+        <!-- MÓDULO 5 -->
+        <section id="modulo5">
+            <h2>MÓDULO 5: LA EVALUACIÓN INTEGRAL (ÉRIC MAIGRET)</h2>
+            <span class="module-subtitle">Un esquema para clasificar qué tan profunda es una teoría.</span>
+
+            <h3>5.1. Nivel 1: Dimensión Natural / Funcional (A = A)</h3>
+            <ul class="content-list">
+                <li><strong>Palabra Clave:</strong> TRANSMISIÓN.</li>
+                <li><strong>Explicación:</strong> Ve la comunicación como una tubería técnica o biológica. Lo importante es la eficacia y que el mensaje llegue sin ruido. Es tautológica (A=A, lo mismo es lo mismo).</li>
+                <li><strong>Teorías aquí:</strong> Cibernética, Conductismo. (Maigret las critica por reduccionistas).</li>
+            </ul>
+
+            <h3>5.2. Nivel 2: Dimensión Cultural / Social (A ≠ B)</h3>
+            <ul class="content-list">
+                <li><strong>Palabra Clave:</strong> IDENTIDAD.</li>
+                <li><strong>Explicación:</strong> Ve la comunicación como la expresión de grupos diferentes. "Yo soy esto, tú eres aquello". Se centra en la pertenencia y la diferencia.</li>
+                <li><strong>Teorías aquí:</strong> Funcionalismo, Antropología.</li>
+            </ul>
+
+            <h3>5.3. Nivel 3: Dimensión Creativa / Política (El Infinito)</h3>
+            <ul class="content-list">
+                <li><strong>Palabra Clave:</strong> DEMOCRACIA / NEGOCIACIÓN.</li>
+                <li><strong>Explicación:</strong> Es el nivel superior. Ve la comunicación como la capacidad ética de vivir juntos a pesar de las diferencias. Es debatir, crear normas, negociar poder y transformar la sociedad.</li>
+                <li><strong>Teorías aquí:</strong> Estudios Culturales avanzados, Habermas (Espacio Público).</li>
+            </ul>
+        </section>
+
+        <!-- MÓDULO 6 -->
+        <section id="modulo6">
+            <h2>MÓDULO 6: TEORÍA SOCIAL DE LOS MEDIOS (JOHN B. THOMPSON)</h2>
+            <span class="module-subtitle">Análisis de la modernidad y el poder.</span>
+
+            <h3>6.1. Los 4 Tipos de Poder</h3>
+            <ul class="content-list">
+                <li><strong>1. Poder Económico:</strong> Recurso: Materiales y Financieros. Institución: Empresas.</li>
+                <li><strong>2. Poder Político:</strong> Recurso Clave: AUTORIDAD (Capacidad de coordinar personas y hacer reglas). Institución: Estado.</li>
+                <li><strong>3. Poder Coercitivo:</strong> Recurso Clave: FUERZA FÍSICA (Violencia, armas). Institución: Ejército/Policía.</li>
+                <li><strong>4. Poder Simbólico:</strong> Recurso Clave: MEDIOS DE INFORMACIÓN Y COMUNICACIÓN (Capacidad de intervenir en el mundo creando realidad, sentido y prestigio). Institución: Medios, Iglesia, Escuela.</li>
+            </ul>
+
+            <h3>6.2. La Modernidad Mediática (Espacio y Tiempo)</h3>
+            <ul class="content-list">
+                <li><strong>Mercantilización:</strong> Las formas simbólicas se vuelven mercancías (se compran y venden).</li>
+                <li><strong>Simultaneidad Despacializada:</strong> La capacidad de experimentar un evento "al mismo tiempo" (en vivo) sin estar en "el mismo lugar" físico. El tiempo se separa del espacio.</li>
+                <li><strong>Historicidad Mediática:</strong> Nuestro sentido del pasado ("lo que pasó antes") depende de los libros y medios, no de la memoria oral directa.</li>
+            </ul>
+        </section>
+
+        <!-- MÓDULO 7 -->
+        <section id="modulo7">
+            <h2>MÓDULO 7: BASES SOCIOLÓGICAS (WEBER, BOURDIEU Y MODELOS)</h2>
+            <span class="module-subtitle">Fundamentos teóricos esenciales.</span>
+
+            <h3>7.1. Modelos de Comunicación</h3>
+                        <ul class="content-list">
+                <li><strong>Modelo de Lasswell:</strong> Lineal y simple (Quién &rarr; Dice qué &rarr; A quién...). Falla porque ignora el contexto social.</li>
+                <li><strong>Modelo de Riley & Riley:</strong> Sociológico. Muestra que el Emisor y el Receptor NO están aislados. Ambos están rodeados de Grupos Primarios (familia, amigos) y una Estructura Social amplia. El contexto define la comunicación.</li>
+            </ul>
+
+            <h3>7.2. Max Weber (Teoría de la Acción Social)</h3>
+            <ul class="content-list">
+                <li><strong>Acción Social:</strong> Solo es social si tiene un SENTIDO SUBJETIVO (significado para quien la hace) y está ORIENTADA A OTROS.</li>
+                <li><strong>4 Tipos de Acción Social:</strong>
+                    <ul>
+                        <li><strong>Racional con arreglo a FINES:</strong> Calculadora. Busca eficiencia (medios para un fin). Típica del capitalismo.</li>
+                        <li><strong>Racional con arreglo a VALORES:</strong> Ética. Se hace por convicción sin importar el costo.</li>
+                        <li><strong>Afectiva:</strong> Movida por emociones (ira, amor).</li>
+                        <li><strong>Tradicional:</strong> Dictada por la costumbre ("siempre se hizo así").</li>
+                    </ul>
+                </li>
+                <li><strong>Racionalización:</strong> El proceso histórico donde la sociedad deja la tradición y la magia para guiarse por el Cálculo y la Previsión.</li>
+                <li><strong>3 Tipos de Dominación (Autoridad):</strong>
+                    <ul>
+                        <li><strong>Tradicional:</strong> Se obedece por costumbre (El Rey/Padre).</li>
+                        <li><strong>Carismática:</strong> Se obedece por devoción al líder (El Héroe/Profeta).</li>
+                        <li><strong>Racional-Legal (Burocrática):</strong> Se obedece a la LEY y la norma establecida. Es la autoridad de la modernidad.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>7.3. Pierre Bourdieu (Economía de las Prácticas)</h3>
+                        <ul class="content-list">
+                <li><strong>La Fórmula:</strong> <span class="highlight">Campo + (Capital + Habitus) = Prácticas Sociales</span>.</li>
+                <li><strong>Campo:</strong> El espacio de juego o lucha (ej: campo académico, campo artístico).</li>
+                <li><strong>Capitales:</strong> Los recursos o "fichas" de poder.
+                    <ul>
+                        <li><em>Económico:</em> Dinero.</li>
+                        <li><em>Cultural:</em> Títulos, conocimientos, educación.</li>
+                        <li><em>Social:</em> Contactos y relaciones.</li>
+                        <li><em>Simbólico:</em> Prestigio y honor.</li>
+                    </ul>
+                </li>
+                <li><strong>Habitus:</strong> Las disposiciones inconscientes. Es la forma de actuar, pensar y sentir que aprendimos de nuestra clase social y entorno.</li>
+                <li><strong>Violencia Simbólica:</strong> Cuando el dominado acepta su dominación como algo "natural" o legítimo, sin darse cuenta de la fuerza que se ejerce sobre él.</li>
+            </ul>
+        </section>
+    </main>
+
+    <a href="#" class="back-to-top">&uarr;</a>
+
+    <script>
+        function toggleMenu() {
+            const overlay = document.getElementById('navOverlay');
+            const backdrop = document.getElementById('backdrop');
+            overlay.classList.toggle('open');
+            backdrop.classList.toggle('show');
+        }
+
+        // Cerrar menú al hacer click en un link (para mejor experiencia móvil)
+        document.querySelectorAll('.nav-overlay a').forEach(item => {
+            item.addEventListener('click', () => {
+                const overlay = document.getElementById('navOverlay');
+                const backdrop = document.getElementById('backdrop');
+                overlay.classList.remove('open');
+                backdrop.classList.remove('show');
+            });
+        });
+    </script>
+</body>
+</html>
